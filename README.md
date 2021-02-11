@@ -4,9 +4,7 @@ EffortLevelingSupport
 
 tkinterを使ってるのでpython3専用。ポケモンの努力値振りをサポートします。
 
-![1](media/GELS_1.jpg)
-
-![2](media/GELS_2.jpg)
+![eff](https://user-images.githubusercontent.com/28250432/107610242-8226dd00-6c84-11eb-96ba-1aa984da26ad.png)
 
 以下の条件のときが対象。
 
