@@ -5,7 +5,7 @@ set -eu
 export DISPLAY=:0
 # 停止したコンテナを再起動したときに残っている、前回の Xvfb のロックを消します。
 rm -f /tmp/.X0-lock /tmp/.X11-unix/X0
-Xvfb "$DISPLAY" -screen 0 350x150x24 -nolisten tcp &
+Xvfb "$DISPLAY" -screen 0 350x170x24 -nolisten tcp &
 xvfb_pid=$!
 
 # Xvfb の準備ができるまで最大 10 秒待ちます。

@@ -8,17 +8,24 @@ tkinterを使っています。 Python 3.15 以上で動きます。
     ● ただしパワー系アイテムが一個しかない
 以下のようなことを教えてくれます
     ● 「パワーアイテムを各ポケモンに順番に持たせそれぞれ群れバトルx戦せよ」
-    ● 「その後、パワーアイテムをもたせず一体戦をy戦せよ」
+    ● 「その後、パワーアイテムを外して群れバトルz戦、一体戦をy戦せよ」
 """
 
 import tkinter
+
+# 1つの能力に振れる努力値の上限です (第6世代以降) 。
+MAX_EV = 252
+# 学習装置で努力値が入るのは手持ちのポケモンだけです。
+MAX_POKEMONS = 6
 
 
 def calculate(ev, num):
     """
     振りたい努力値と、同時に処理したいポケモン数を指定すると、
     パワーアイテムを各ポケモンに順番に持たせてそれぞれ群れバトルを x 回させ
-    その後パワーアイテムを持たせずに単体バトルを y 回すればいいと教えてくれます。
+    その後パワーアイテムを外して群れバトルを z 回、単体バトルを y 回すればいいと
+    教えてくれます。
+    戦闘数がいちばん少なくなる組み合わせを返します。
 
     Parameters
     ----------
@@ -31,19 +38,23 @@ def calculate(ev, num):
     -------
     x : int
         上の説明参照
+    z : int
+        上の説明参照
     y : int
         上の説明参照
     """
 
-    if ev <= 0 or num <= 0:
+    if not (1 <= ev <= MAX_EV and 1 <= num <= MAX_POKEMONS):
         raise ValueError(f"Invalid value, ev:{ev}, num:{num}")
 
     # 群れバトル x 戦をすべてのポケモンに順番に回したときの、1体あたりの努力値です。
     # 持たせているあいだに 25 、ほかのポケモンが持っているあいだに 5 ずつ入ります。
     ev_per_x = 25 + 5 * (num - 1)
-    x = ev // ev_per_x
-    y = ev - ev_per_x * x
-    return x, y
+    x, rest = divmod(ev, ev_per_x)
+    # 残りは、パワーアイテムなしの群れバトル (全員に 5) と
+    # 単体バトル (全員に 1) で埋めます。
+    z, y = divmod(rest, 5)
+    return x, z, y
 
 
 class GELS(tkinter.Frame):
@@ -67,7 +78,7 @@ class GELS(tkinter.Frame):
 
     def __create_frame_appearance(self):
         """Frame の外観を作ります。構造は以下のとおりです。
-        - Root(350x150)
+        - Root(350x170)
             - Frame
                 - 1列 Label
                 - 2列 Entry
@@ -79,7 +90,7 @@ class GELS(tkinter.Frame):
                 - Label
         """
 
-        self.master.geometry("350x150")
+        self.master.geometry("350x170")
         self.master.title("Green Effort Leveling Support")
 
         # 1段目 Frame。
@@ -95,6 +106,8 @@ class GELS(tkinter.Frame):
         tkinter.Button(frame, command=self.__on_push_button, text="Calculate!").grid(
             row=0, column=5, padx=8
         )
+        # Enter キーでも計算します。
+        self.master.bind("<Return>", lambda _event: self.__on_push_button())
 
         # 2段目 Frame。
         frame_for_result = tkinter.Frame(self)
@@ -106,16 +119,20 @@ class GELS(tkinter.Frame):
 
         # 計算をします。
         try:
-            x, y = calculate(self.ev_value.get(), self.num_value.get())
+            num = self.num_value.get()
+            x, z, y = calculate(self.ev_value.get(), num)
         except ValueError, tkinter.TclError:
-            self.result_text.set("Please input valid numbers.")
+            self.result_text.set(
+                f"Please input EV 1-{MAX_EV} and pokemons 1-{MAX_POKEMONS}."
+            )
             return
 
         # 結果メッセージを表示します。
         self.result_text.set(
             "Give power-item each of them\n"
-            + f"{x} times in flock battle.\n"
-            + f"And then kick {y} pokemons' ass"
+            + f"{x} times in flock battle ({num * x} in total).\n"
+            + f"Then take it away, {z} flock battles\n"
+            + f"and kick {y} pokemons' ass one by one."
         )
 
 

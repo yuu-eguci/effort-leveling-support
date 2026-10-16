@@ -16,9 +16,9 @@ docker compose up --build
 ```
 
 - ブラウザで http://localhost:6080/vnc.html?autoconnect=true を開くと、 GUI が表示されます
-- `EV` に振りたい努力値、 `to` に同時に育てるポケモン数を入れて `Calculate!` を押すと、下に結果が出ます
-    - 例: `252` と `3` → `Give power-item each of them 7 times in flock battle. And then kick 7 pokemons' ass`
-    - 数字以外や 0 以下を入れると `Please input valid numbers.` と出ます
+- `EV` に振りたい努力値、 `to` に同時に育てるポケモン数を入れて `Calculate!` (または Enter キー) を押すと、下に結果が出ます
+    - 例: `252` と `3` → `Give power-item each of them 7 times in flock battle (21 in total). Then take it away, 1 flock battles and kick 2 pokemons' ass one by one.`
+    - 努力値は 1〜252 、ポケモン数は 1〜6 です。範囲外や数字以外を入れると `Please input EV 1-252 and pokemons 1-6.` と出ます
 - 止めるときは `Ctrl+C` (別ターミナルなら `docker compose down`) です
 - ポートはホストの `127.0.0.1:6080` だけに公開します。 VNC にパスワードはないので、ほかのマシンへ公開しないでください
 - 6080 が使用中なら `ELS_PORT=16080 docker compose up --build` のようにホスト側のポートを変えられます
@@ -56,7 +56,9 @@ uv sync && uv run ruff check . && uv run pytest
 以下のようなことを教えてくれます
 
 - 「パワーアイテムを各ポケモンに順番に持たせそれぞれ群れバトルx戦せよ」
-- 「その後、パワーアイテムをもたせず一体戦をy戦せよ」
+- 「その後、パワーアイテムを外して群れバトルz戦、一体戦をy戦せよ」
+
+戦闘数の合計がいちばん少なくなる組み合わせを出します。
 
 計算は第6世代 (XY / ORAS) の仕様を前提にしています。
 
@@ -64,3 +66,4 @@ uv sync && uv run ruff check . && uv run pytest
 - パワー系アイテムは1体あたり +4 → 持たせたポケモンは群れバトル1戦で 25
 - 学習装置で、持たせていないポケモンも群れバトル1戦で 5
 - 一体戦は1戦で 1
+- 1つの能力に振れる努力値は 252 まで、学習装置が効く手持ちは 6 体まで

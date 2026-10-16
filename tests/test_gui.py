@@ -39,23 +39,32 @@ def test_initial_values(app):
     assert app.result_text.get() == "The result's gonna be written here."
 
 
+RESULT_252_3 = (
+    "Give power-item each of them\n"
+    "7 times in flock battle (21 in total).\n"
+    "Then take it away, 1 flock battles\n"
+    "and kick 2 pokemons' ass one by one."
+)
+
+
 def test_shows_result(app):
-    assert press_calculate(app, "252", "3") == (
-        "Give power-item each of them\n"
-        "7 times in flock battle.\n"
-        "And then kick 7 pokemons' ass"
-    )
+    assert press_calculate(app, "252", "3") == RESULT_252_3
 
 
-def test_shows_result_for_large_ev(app):
-    assert press_calculate(app, "5000", "1") == (
-        "Give power-item each of them\n"
-        "200 times in flock battle.\n"
-        "And then kick 0 pokemons' ass"
-    )
+def test_return_key_calculates(app):
+    _, num_entry = find_widgets(app, tkinter.Entry)
+    num_entry.delete(0, tkinter.END)
+    num_entry.insert(0, "3")
+    num_entry.focus_force()
+    app.update()
+    num_entry.event_generate("<Return>")
+    assert app.result_text.get() == RESULT_252_3
 
 
-@pytest.mark.parametrize(("ev", "num"), [("0", "1"), ("abc", "1"), ("252", "")])
+@pytest.mark.parametrize(
+    ("ev", "num"),
+    [("0", "1"), ("253", "1"), ("252", "7"), ("abc", "1"), ("252", "")],
+)
 def test_shows_error_for_invalid_input(app, ev, num):
     press_calculate(app, "252", "1")
-    assert press_calculate(app, ev, num) == "Please input valid numbers."
+    assert press_calculate(app, ev, num) == "Please input EV 1-252 and pokemons 1-6."
