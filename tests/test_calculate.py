@@ -58,29 +58,35 @@ def test_calculate_gives_exact_ev(num):
         assert 25 * x + 5 * (num - 1) * x + 5 * hordes + singles == ev
 
 
-def fewest_battles_in_turns(num, ev):
-    """全員に同じ回数ずつ持たせる場合に限って、全組み合わせから最小の戦闘数を求めます。"""
-    ev_per_x = 25 + 5 * (num - 1)
-    return min(
-        num * x + hordes + (ev - ev_per_x * x - 5 * hordes)
-        for x in range(ev // ev_per_x + 1)
-        for hordes in range((ev - ev_per_x * x) // 5 + 1)
-    )
+def fewest_battles_any_order(num, ev):
+    """持たせ方を自由にしたときの最小の戦闘数を、式を変形して総当たりで求めます。
+
+    ポケモン i に持たせて群れバトルを a_i 回、一体戦を b_i 回した (合計 A 、 B) あと、
+    アイテムなしで群れバトルを H 回、一体戦を S 回すると、 i の努力値は
+    20 a_i + 4 b_i + (5A + B + 5H + S) です。全員が ev になるには 20 a_i + 4 b_i が
+    全員同じ値 k でなければならず、戦闘数 A + B + H + S は k と A だけで決まります。
+    """
+    battles = []
+    for k in range(0, ev + 1, 4):
+        for a_total in range(num * (k // 20) + 1):
+            b_total = num * k // 4 - 5 * a_total
+            rest = ev - k - 5 * a_total - b_total
+            if rest >= 0:
+                battles.append(a_total + b_total + rest // 5 + rest % 5)
+    return min(battles)
 
 
 @pytest.mark.parametrize("num", [1, 2, 3])
-def test_calculate_gives_fewest_battles(num):
+def test_fewest_battles_any_order_matches_bfs(num):
     for ev, battles in fewest_battles_by_bfs(num, MAX_EV).items():
-        x, hordes, singles = calculate(ev, num)
-        assert num * x + hordes + singles == battles
+        assert fewest_battles_any_order(num, ev) == battles
 
 
 @pytest.mark.parametrize("num", range(1, MAX_POKEMONS + 1))
-def test_calculate_gives_fewest_battles_in_turns(num):
-    # 幅優先探索は 4 体以上だと重いため、持たせ方を順番に限った総当たりで確かめます。
+def test_calculate_gives_fewest_battles(num):
     for ev in range(1, MAX_EV + 1):
         x, hordes, singles = calculate(ev, num)
-        assert num * x + hordes + singles == fewest_battles_in_turns(num, ev)
+        assert num * x + hordes + singles == fewest_battles_any_order(num, ev)
 
 
 @pytest.mark.parametrize(
