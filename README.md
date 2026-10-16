@@ -7,7 +7,7 @@ tkinter を使った、ポケモンの努力値振りをサポートする GUI �
 - Python: 3.15!
 - Linter: Ruff 0.17!
 - Test: pytest 9.1!
-- GUI: tkinter (Tk 8.6) 。 Docker ではブラウザ (noVNC) から操作します
+- GUI: tkinter (Tk 8.6) 。 Docker ではブラウザ (noVNC 1.7) から操作します
 
 ## パッと実行してみたい
 

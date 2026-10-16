@@ -20,6 +20,6 @@ until [ -e /tmp/.X11-unix/X0 ]; do
 done
 
 x11vnc -display "$DISPLAY" -localhost -forever -shared -nopw -quiet &
-websockify --web /usr/share/novnc 6080 localhost:5900 &
+websockify --web /opt/novnc 6080 localhost:5900 &
 
 exec python effort_leveling_support.py

@@ -1,13 +1,21 @@
+# syntax=docker/dockerfile:1
 FROM python:3.15-slim-trixie
 
 COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /bin/
 
 # 公式 slim イメージは Tk のライブラリを含まないため libtk8.6 を入れます。
-# Xvfb (仮想ディスプレイ) 、 x11vnc 、 noVNC でブラウザから GUI を操作できるようにします。
+# Xvfb (仮想ディスプレイ) 、 x11vnc 、 websockify + noVNC でブラウザから GUI を操作できるようにします。
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        libtk8.6 xvfb xauth x11vnc novnc fonts-dejavu-core \
+        libtk8.6 xvfb xauth x11vnc websockify fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
+
+# Debian の novnc パッケージは nodejs まで入って大きくなるため、 noVNC の公式 release を使います。
+ADD --checksum=sha256:b1003a11b6e6e8d8f7f5e5586daae7f8ca651d8aee0aa155ff9ac841c48f52c6 \
+    https://github.com/novnc/noVNC/archive/refs/tags/v1.7.0.tar.gz /tmp/novnc.tar.gz
+RUN mkdir /opt/novnc \
+    && tar -xzf /tmp/novnc.tar.gz -C /opt/novnc --strip-components=1 \
+    && rm /tmp/novnc.tar.gz
 
 ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
     UV_PYTHON_DOWNLOADS=never \
