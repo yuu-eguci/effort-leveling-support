@@ -34,8 +34,8 @@ def press_calculate(app, ev, num):
 
 
 def test_initial_values(app):
-    assert app.ev_value.get() == 252
-    assert app.num_value.get() == 1
+    assert app.ev_value.get() == "252"
+    assert app.num_value.get() == "1"
     assert app.result_text.get() == "The result's gonna be written here."
 
 
@@ -63,8 +63,21 @@ def test_return_key_calculates(app):
 
 @pytest.mark.parametrize(
     ("ev", "num"),
-    [("0", "1"), ("253", "1"), ("252", "7"), ("abc", "1"), ("252", "")],
+    [
+        ("0", "1"),
+        ("253", "1"),
+        ("252", "7"),
+        ("abc", "1"),
+        ("252", ""),
+        ("2.5", "1"),
+        ("252", "1.9"),
+        ("1e2", "1"),
+    ],
 )
 def test_shows_error_for_invalid_input(app, ev, num):
     press_calculate(app, "252", "1")
     assert press_calculate(app, ev, num) == "Please input EV 1-252 and pokemons 1-6."
+
+
+def test_accepts_full_width_digits_and_spaces(app):
+    assert press_calculate(app, "２５２", " 3 ") == RESULT_252_3  # noqa: RUF001

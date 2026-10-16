@@ -62,12 +62,13 @@ class GELS(tkinter.Frame):
         tkinter.Frame.__init__(self, master)
 
         # インスタンス変数: 入力値、振りたい努力値数。
-        self.ev_value = tkinter.IntVar()
-        self.ev_value.set(252)
+        # IntVar は 2.5 を 2 に黙って切り捨てるため、文字列で受けて int() で変換します。
+        self.ev_value = tkinter.StringVar()
+        self.ev_value.set("252")
 
         # インスタンス変数: 入力値、同時に処理したいポケモン数。
-        self.num_value = tkinter.IntVar()
-        self.num_value.set(1)
+        self.num_value = tkinter.StringVar()
+        self.num_value.set("1")
 
         # インスタンス変数: 結果メッセージ。
         self.result_text = tkinter.StringVar()
@@ -119,9 +120,9 @@ class GELS(tkinter.Frame):
 
         # 計算をします。
         try:
-            num = self.num_value.get()
-            x, z, y = calculate(self.ev_value.get(), num)
-        except ValueError, tkinter.TclError:
+            num = int(self.num_value.get())
+            x, z, y = calculate(int(self.ev_value.get()), num)
+        except ValueError:
             self.result_text.set(
                 f"Please input EV 1-{MAX_EV} and pokemons 1-{MAX_POKEMONS}."
             )
