@@ -42,7 +42,7 @@ def test_initial_values(app):
 RESULT_252_3 = (
     "Give power-item each of them\n"
     "7 times in flock battle.\n"
-    "Then take it away, 1 flock battles\n"
+    "Then take it away, 1 flock battle\n"
     "and kick 2 pokemons' ass one by one.\n"
     "24 battles in total."
 )
@@ -50,6 +50,40 @@ RESULT_252_3 = (
 
 def test_shows_result(app):
     assert press_calculate(app, "252", "3") == RESULT_252_3
+
+
+@pytest.mark.parametrize(
+    ("ev", "num", "expected"),
+    [
+        (
+            "24",
+            "6",
+            "Without power-item, 4 flock battles\n"
+            "and kick 4 pokemons' ass one by one.\n"
+            "8 battles in total.",
+        ),
+        (
+            "25",
+            "1",
+            "Give power-item each of them\n1 time in flock battle.\n1 battle in total.",
+        ),
+        (
+            "250",
+            "2",
+            "Give power-item each of them\n"
+            "8 times in flock battle.\n"
+            "Then take it away, 2 flock battles.\n"
+            "18 battles in total.",
+        ),
+        (
+            "1",
+            "6",
+            "Without power-item,\nkick 1 pokemon's ass one by one.\n1 battle in total.",
+        ),
+    ],
+)
+def test_omits_zero_steps_and_uses_singular(app, ev, num, expected):
+    assert press_calculate(app, ev, num) == expected
 
 
 @pytest.mark.parametrize("key", ["<Return>", "<KP_Enter>"])

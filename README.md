@@ -17,7 +17,8 @@ docker compose up --build
 
 - ブラウザで http://localhost:6080/vnc.html?autoconnect=true を開くと、 GUI が表示されます
 - `EV` に振りたい努力値、 `to` に同時に育てるポケモン数を入れて `Calculate!` (または Enter キー) を押すと、下に結果が出ます
-    - 例: `252` と `3` → `Give power-item each of them 7 times in flock battle. Then take it away, 1 flock battles and kick 2 pokemons' ass one by one. 24 battles in total.`
+    - 例: `252` と `3` → `Give power-item each of them 7 times in flock battle. Then take it away, 1 flock battle and kick 2 pokemons' ass one by one. 24 battles in total.`
+    - 0 回の手順は出しません。たとえば `24` と `6` → `Without power-item, 4 flock battles and kick 4 pokemons' ass one by one. 8 battles in total.`
     - 努力値は 1〜252 、ポケモン数は 1〜6 です。全角数字も使えます。範囲外や整数以外 (`abc` や `2.5` など) を入れると `Please input EV 1-252 and pokemons 1-6.` と出ます
 - 止めるときは `Ctrl+C` (別ターミナルなら `docker compose down`) です
 - ポートはホストの `127.0.0.1:6080` だけに公開します。 VNC にパスワードはないので、ほかのマシンへ公開しないでください

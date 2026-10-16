@@ -57,6 +57,31 @@ def calculate(ev, num):
     return x, z, y
 
 
+def format_result(num, x, z, y):
+    """calculate の結果を、0 回の手順を省いた英語の文にします。"""
+
+    def plural(count, word):
+        return word if count == 1 else f"{word}s"
+
+    lines = []
+    if x:
+        lines += [
+            "Give power-item each of them",
+            f"{x} {plural(x, 'time')} in flock battle.",
+        ]
+    prefix = "Then take it away" if x else "Without power-item"
+    kick = f"kick {y} {"pokemon's" if y == 1 else "pokemons'"} ass one by one."
+    if z and y:
+        lines += [f"{prefix}, {z} flock {plural(z, 'battle')}", f"and {kick}"]
+    elif z:
+        lines.append(f"{prefix}, {z} flock {plural(z, 'battle')}.")
+    elif y:
+        lines += [f"{prefix},", kick]
+    total = num * x + z + y
+    lines.append(f"{total} {plural(total, 'battle')} in total.")
+    return "\n".join(lines)
+
+
 class GELS(tkinter.Frame):
     def __init__(self, master=None):
         tkinter.Frame.__init__(self, master)
@@ -130,13 +155,7 @@ class GELS(tkinter.Frame):
             return
 
         # 結果メッセージを表示します。
-        self.result_text.set(
-            "Give power-item each of them\n"
-            + f"{x} times in flock battle.\n"
-            + f"Then take it away, {z} flock battles\n"
-            + f"and kick {y} pokemons' ass one by one.\n"
-            + f"{num * x + z + y} battles in total."
-        )
+        self.result_text.set(format_result(num, x, z, y))
 
 
 def main():
