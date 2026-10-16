@@ -41,9 +41,10 @@ def test_initial_values(app):
 
 RESULT_252_3 = (
     "Give power-item each of them\n"
-    "7 times in flock battle (21 in total).\n"
+    "7 times in flock battle.\n"
     "Then take it away, 1 flock battles\n"
-    "and kick 2 pokemons' ass one by one."
+    "and kick 2 pokemons' ass one by one.\n"
+    "24 battles in total."
 )
 
 
@@ -51,13 +52,14 @@ def test_shows_result(app):
     assert press_calculate(app, "252", "3") == RESULT_252_3
 
 
-def test_return_key_calculates(app):
+@pytest.mark.parametrize("key", ["<Return>", "<KP_Enter>"])
+def test_enter_key_calculates(app, key):
     _, num_entry = find_widgets(app, tkinter.Entry)
     num_entry.delete(0, tkinter.END)
     num_entry.insert(0, "3")
     num_entry.focus_force()
     app.update()
-    num_entry.event_generate("<Return>")
+    num_entry.event_generate(key)
     assert app.result_text.get() == RESULT_252_3
 
 

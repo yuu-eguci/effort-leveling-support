@@ -4,7 +4,7 @@ tkinterを使っています。 Python 3.15 以上で動きます。
 ポケモンの努力値振りをサポートします。
 
 以下の条件のときが対象。
-    ● n体以上のポケモンにeずつ努力値を振りたい
+    ● n体 (6体まで) のポケモンにeずつ努力値を振りたい
     ● ただしパワー系アイテムが一個しかない
 以下のようなことを教えてくれます
     ● 「パワーアイテムを各ポケモンに順番に持たせそれぞれ群れバトルx戦せよ」
@@ -108,7 +108,8 @@ class GELS(tkinter.Frame):
             row=0, column=5, padx=8
         )
         # Enter キーでも計算します。
-        self.master.bind("<Return>", lambda _event: self.__on_push_button())
+        for key in ("<Return>", "<KP_Enter>"):
+            self.master.bind(key, lambda _event: self.__on_push_button())
 
         # 2段目 Frame。
         frame_for_result = tkinter.Frame(self)
@@ -131,9 +132,10 @@ class GELS(tkinter.Frame):
         # 結果メッセージを表示します。
         self.result_text.set(
             "Give power-item each of them\n"
-            + f"{x} times in flock battle ({num * x} in total).\n"
+            + f"{x} times in flock battle.\n"
             + f"Then take it away, {z} flock battles\n"
-            + f"and kick {y} pokemons' ass one by one."
+            + f"and kick {y} pokemons' ass one by one.\n"
+            + f"{num * x + z + y} battles in total."
         )
 
 

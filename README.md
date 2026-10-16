@@ -17,7 +17,7 @@ docker compose up --build
 
 - ブラウザで http://localhost:6080/vnc.html?autoconnect=true を開くと、 GUI が表示されます
 - `EV` に振りたい努力値、 `to` に同時に育てるポケモン数を入れて `Calculate!` (または Enter キー) を押すと、下に結果が出ます
-    - 例: `252` と `3` → `Give power-item each of them 7 times in flock battle (21 in total). Then take it away, 1 flock battles and kick 2 pokemons' ass one by one.`
+    - 例: `252` と `3` → `Give power-item each of them 7 times in flock battle. Then take it away, 1 flock battles and kick 2 pokemons' ass one by one. 24 battles in total.`
     - 努力値は 1〜252 、ポケモン数は 1〜6 です。全角数字も使えます。範囲外や整数以外 (`abc` や `2.5` など) を入れると `Please input EV 1-252 and pokemons 1-6.` と出ます
 - 止めるときは `Ctrl+C` (別ターミナルなら `docker compose down`) です
 - ポートはホストの `127.0.0.1:6080` だけに公開します。 VNC にパスワードはないので、ほかのマシンへ公開しないでください
@@ -50,7 +50,7 @@ uv sync && uv run ruff check . && uv run pytest
 
 以下の条件のときが対象。
 
-- n体以上のポケモンにeずつ努力値を振りたい
+- n体 (6体まで) のポケモンにeずつ努力値を振りたい
 - ただしパワー系アイテムが一個しかない
 
 以下のようなことを教えてくれます
@@ -58,7 +58,7 @@ uv sync && uv run ruff check . && uv run pytest
 - 「パワーアイテムを各ポケモンに順番に持たせそれぞれ群れバトルx戦せよ」
 - 「その後、パワーアイテムを外して群れバトルz戦、一体戦をy戦せよ」
 
-戦闘数の合計がいちばん少なくなる組み合わせを出します。
+全員の努力値がちょうど e になる組み合わせのうち、戦闘数の合計がいちばん少ないものを出します。
 
 計算は第6世代 (XY / ORAS) の仕様を前提にしています。
 
