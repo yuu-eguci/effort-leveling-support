@@ -11,7 +11,6 @@ tkinterを使ってるのでpython3専用。
     ● 「その後、パワーアイテムをもたせず一体戦をy戦せよ」
 """
 
-
 import tkinter
 
 
@@ -37,14 +36,14 @@ def calculate(ev, num):
     """
 
     if ev <= 0 or num <= 0:
-        raise ValueError(f'Invalid value, ev:{ev}, num:{num}')
+        raise ValueError(f"Invalid value, ev:{ev}, num:{num}")
 
-    for x in range(100):
-        _ = (25 * x) + (x * 5 * (num - 1))
-        if _ > ev:
-            x -= 1
-            y = ev - ((25 * x) + (x * 5 * (num - 1)))
-            return x, y
+    # 群れバトル x 戦をすべてのポケモンに順番に回したときの、1体あたりの努力値です。
+    # 持たせているあいだに 25 、ほかのポケモンが持っているあいだに 5 ずつ入ります。
+    ev_per_x = 25 + 5 * (num - 1)
+    x = ev // ev_per_x
+    y = ev - ev_per_x * x
+    return x, y
 
 
 class GELS(tkinter.Frame):
@@ -61,7 +60,7 @@ class GELS(tkinter.Frame):
 
         # インスタンス変数: 結果メッセージ。
         self.result_text = tkinter.StringVar()
-        self.result_text.set('The result\'s gonna be written here.')
+        self.result_text.set("The result's gonna be written here.")
 
         # Frame の外観を作ります。
         self.__create_frame_appearance()
@@ -80,26 +79,22 @@ class GELS(tkinter.Frame):
                 - Label
         """
 
-        self.master.geometry('350x150')
-        self.master.title('Green Effort Leveling Support')
+        self.master.geometry("350x150")
+        self.master.title("Green Effort Leveling Support")
 
         # 1段目 Frame。
         frame = tkinter.Frame(self)
         frame.pack(pady=8)
 
         # その中身。
-        tkinter.Label(frame, text='EV').grid(
-            row=0, column=0)
-        tkinter.Entry(frame, width=5, textvariable=self.ev_value).grid(
-            row=0, column=1)
-        tkinter.Label(frame, text='to').grid(
-            row=0, column=2)
-        tkinter.Entry(frame, width=5, textvariable=self.num_value).grid(
-            row=0, column=3)
-        tkinter.Label(frame, text='pokemons').grid(
-            row=0, column=4)
-        tkinter.Button(frame, command=self.__on_push_button, text='Calculate!').grid(
-            row=0, column=5, padx=8)
+        tkinter.Label(frame, text="EV").grid(row=0, column=0)
+        tkinter.Entry(frame, width=5, textvariable=self.ev_value).grid(row=0, column=1)
+        tkinter.Label(frame, text="to").grid(row=0, column=2)
+        tkinter.Entry(frame, width=5, textvariable=self.num_value).grid(row=0, column=3)
+        tkinter.Label(frame, text="pokemons").grid(row=0, column=4)
+        tkinter.Button(frame, command=self.__on_push_button, text="Calculate!").grid(
+            row=0, column=5, padx=8
+        )
 
         # 2段目 Frame。
         frame_for_result = tkinter.Frame(self)
@@ -112,16 +107,24 @@ class GELS(tkinter.Frame):
         # 計算をします。
         try:
             x, y = calculate(self.ev_value.get(), self.num_value.get())
-        except ValueError:
-            self.result_text.set('Please input valid numbers.')
+        except ValueError, tkinter.TclError:
+            self.result_text.set("Please input valid numbers.")
             return
 
         # 結果メッセージを表示します。
-        self.result_text.set('Give power-item each of them\n'
-                             + f'{x} times in flock battle.\n'
-                             + f'And then kick {y} pokemons\' ass')
+        self.result_text.set(
+            "Give power-item each of them\n"
+            + f"{x} times in flock battle.\n"
+            + f"And then kick {y} pokemons' ass"
+        )
 
 
-gels = GELS()
-gels.pack()
-gels.mainloop()
+def main():
+    root = tkinter.Tk()
+    gels = GELS(root)
+    gels.pack()
+    gels.mainloop()
+
+
+if __name__ == "__main__":
+    main()

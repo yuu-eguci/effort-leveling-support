@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    init: true
+    ports:
+      - "127.0.0.1:${ELS_PORT:-6080}:6080"
+    volumes:
+      - .:/app
