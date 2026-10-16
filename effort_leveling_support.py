@@ -57,6 +57,18 @@ def calculate(ev, num):
     return x, z, y
 
 
+def parse_number(text):
+    """数字だけの文字列を int にします。全角数字と前後の空白は使えます。
+
+    int() は "+3" や "2_52" も受け付けてしまうため、先に数字だけかを確かめます。
+    """
+
+    text = text.strip()
+    if not text.isdecimal():
+        raise ValueError(f"Invalid number: {text!r}")
+    return int(text)
+
+
 def format_result(num, x, z, y):
     """calculate の結果を、0 回の手順を省いた英語の文にします。"""
 
@@ -146,8 +158,8 @@ class GELS(tkinter.Frame):
 
         # 計算をします。
         try:
-            num = int(self.num_value.get())
-            x, z, y = calculate(int(self.ev_value.get()), num)
+            num = parse_number(self.num_value.get())
+            x, z, y = calculate(parse_number(self.ev_value.get()), num)
         except ValueError:
             self.result_text.set(
                 f"Please input EV 1-{MAX_EV} and pokemons 1-{MAX_POKEMONS}."

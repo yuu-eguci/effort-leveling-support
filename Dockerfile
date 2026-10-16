@@ -31,6 +31,6 @@ COPY . .
 
 EXPOSE 6080
 # noVNC の画面と、その先の VNC サーバーが応答すれば healthy です。
-HEALTHCHECK --interval=5s --timeout=3s --start-period=10s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --start-interval=1s --retries=3 \
     CMD ["python", "docker/healthcheck.py"]
 CMD ["docker/start-gui.sh"]

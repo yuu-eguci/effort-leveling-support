@@ -58,11 +58,29 @@ def test_calculate_gives_exact_ev(num):
         assert 25 * x + 5 * (num - 1) * x + 5 * hordes + singles == ev
 
 
+def fewest_battles_in_turns(num, ev):
+    """全員に同じ回数ずつ持たせる場合に限って、全組み合わせから最小の戦闘数を求めます。"""
+    ev_per_x = 25 + 5 * (num - 1)
+    return min(
+        num * x + hordes + (ev - ev_per_x * x - 5 * hordes)
+        for x in range(ev // ev_per_x + 1)
+        for hordes in range((ev - ev_per_x * x) // 5 + 1)
+    )
+
+
 @pytest.mark.parametrize("num", [1, 2, 3])
 def test_calculate_gives_fewest_battles(num):
-    for ev, battles in fewest_battles_by_bfs(num, 60).items():
+    for ev, battles in fewest_battles_by_bfs(num, MAX_EV).items():
         x, hordes, singles = calculate(ev, num)
         assert num * x + hordes + singles == battles
+
+
+@pytest.mark.parametrize("num", range(1, MAX_POKEMONS + 1))
+def test_calculate_gives_fewest_battles_in_turns(num):
+    # 幅優先探索は 4 体以上だと重いため、持たせ方を順番に限った総当たりで確かめます。
+    for ev in range(1, MAX_EV + 1):
+        x, hordes, singles = calculate(ev, num)
+        assert num * x + hordes + singles == fewest_battles_in_turns(num, ev)
 
 
 @pytest.mark.parametrize(

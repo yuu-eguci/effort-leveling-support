@@ -108,6 +108,8 @@ def test_enter_key_calculates(app, key):
         ("2.5", "1"),
         ("252", "1.9"),
         ("1e2", "1"),
+        ("2_52", "1"),
+        ("252", "+3"),
     ],
 )
 def test_shows_error_for_invalid_input(app, ev, num):
