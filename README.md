@@ -47,6 +47,10 @@ uv sync && uv run ruff check . && uv run pytest
 
 ## どんなツール?
 
+![いまの画面](docs/screenshot.png)
+
+初代の画面はこちら。
+
 ![eff](https://user-images.githubusercontent.com/28250432/107610242-8226dd00-6c84-11eb-96ba-1aa984da26ad.png)
 
 以下の条件のときが対象。
