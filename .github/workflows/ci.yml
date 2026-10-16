@@ -20,3 +20,8 @@ jobs:
       - run: docker compose run --rm app ruff check .
       - run: docker compose run --rm app ruff format --check .
       - run: docker compose run --rm app xvfb-run -a pytest
+      - run: docker compose up --wait --wait-timeout 60
+      - if: always()
+        run: docker compose logs
+      - if: always()
+        run: docker compose down

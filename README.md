@@ -33,7 +33,7 @@ docker compose run --rm app xvfb-run -a pytest
 
 - `ruff` はエラーがなければ `All checks passed!` などを出して終了コード 0 で終わります
 - `pytest` は仮想ディスプレイ (Xvfb) 上で GUI のテストまで実行します
-- GitHub Actions (`.github/workflows/ci.yml`) でも、 master への push と pull request のたびに同じ 3 コマンドを実行します。デプロイや公開はしません
+- GitHub Actions (`.github/workflows/ci.yml`) でも、 master への push と pull request のたびに同じ 3 コマンドを実行します。さらに `docker compose up --wait` で、 noVNC の画面と VNC サーバーが応答する (コンテナが healthy になる) ところまで確認します。デプロイや公開はしません
 
 Docker を使わずに動かすなら、 Tk 付きの Python 3.15 と [uv](https://docs.astral.sh/uv/) を用意して次のとおりです。
 
