@@ -1,6 +1,6 @@
 """EffortLevelingSupport
 
-tkinterを使ってるのでpython3専用。
+tkinterを使っています。 Python 3.15 以上で動きます。
 ポケモンの努力値振りをサポートします。
 
 以下の条件のときが対象。

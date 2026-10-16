@@ -1,3 +1,6 @@
 .git
 .venv
-docs/iona-kest.md
+docs
+__pycache__
+.ruff_cache
+.pytest_cache
