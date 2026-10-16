@@ -21,6 +21,7 @@ docker compose up --build
     - 例: `252` と `3` → `Give power-item each of them 7 times in flock battle. Then take it away, 1 flock battle and kick 2 pokemons' ass one by one. 24 battles in total.`
     - 0 回の手順は省略。たとえば `24` と `6` → `Without power-item, 4 flock battles and kick 4 pokemons' ass one by one. 8 battles in total.`
     - 努力値は 1〜252、ポケモン数は 1〜6。全角数字も OK。範囲外や数字以外 (`abc`、 `2.5`、 `+3`、 `2_52` など) はエラーメッセージになる
+    - ただしブラウザ (noVNC) 経由だと全角文字はアプリまで届かず、空欄扱いでエラーになる。半角で入れよう (全角数字が使えるのは Docker なしで動かすとき)
 - 止めるときは `Ctrl+C`。別ターミナルなら `docker compose down`
 - 公開先はホストの `127.0.0.1:6080` だけ。 VNC にパスワードはないので、同じ PC のほかのユーザからも操作できる。ほかのマシンには公開しないでね
 - 6080 が使用中なら `ELS_PORT=16080 docker compose up --build` のようにポートを変えられる
