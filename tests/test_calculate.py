@@ -76,10 +76,15 @@ def fewest_battles_any_order(num, ev):
     return min(battles)
 
 
-@pytest.mark.parametrize("num", [1, 2, 3])
-def test_fewest_battles_any_order_matches_bfs(num):
-    for ev, battles in fewest_battles_by_bfs(num, MAX_EV).items():
+# 4 体以上は幅優先探索が重いため、努力値の範囲を絞って確かめます。
+@pytest.mark.parametrize(
+    ("num", "max_ev"), [(1, MAX_EV), (2, MAX_EV), (3, MAX_EV), (4, 60)]
+)
+def test_fewest_battles_match_bfs(num, max_ev):
+    for ev, battles in fewest_battles_by_bfs(num, max_ev).items():
         assert fewest_battles_any_order(num, ev) == battles
+        x, hordes, singles = calculate(ev, num)
+        assert num * x + hordes + singles == battles
 
 
 @pytest.mark.parametrize("num", range(1, MAX_POKEMONS + 1))
